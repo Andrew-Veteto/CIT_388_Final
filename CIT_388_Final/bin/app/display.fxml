@@ -14,9 +14,10 @@
             <Button fx:id="ridesBtn" layoutX="163.0" layoutY="3.0" mnemonicParsing="false" text="Rides" />
             <Button fx:id="saveBtn" layoutX="842.0" layoutY="3.0" mnemonicParsing="false" text="Save" />
             <Button fx:id="loadBtn" layoutX="789.0" layoutY="3.0" mnemonicParsing="false" text="Load" />
-            <Button fx:id="newBtn" layoutX="219.0" layoutY="3.0" mnemonicParsing="false" text="New" />
-            <Button fx:id="removeBtn" layoutX="269.0" layoutY="3.0" mnemonicParsing="false" text="Remove" />
-            <Button fx:id="allInfoBtn" layoutX="343.0" layoutY="3.0" mnemonicParsing="false" text="Generate All Info" />
+            <Button fx:id="newBtn" layoutX="219.0" layoutY="3.0" mnemonicParsing="false" text="New Object" />
+            <Button fx:id="removeBtn" layoutX="317.0" layoutY="3.0" mnemonicParsing="false" text="Remove Object" />
+            <Button fx:id="updatePark" layoutX="437.0" layoutY="3.0" mnemonicParsing="false" text="Update Park Info" />
+            <Button fx:id="allInfoBtn" layoutX="569.0" layoutY="3.0" mnemonicParsing="false" text="Generate All Info" />
          </children>
       </AnchorPane>
    </top>
@@ -40,7 +41,7 @@
                   <Label layoutX="36.0" layoutY="144.0" text="Num of Guests:" />
                   <Label layoutX="14.0" layoutY="101.0" text="Num of Employees:" />
                   <Label layoutX="291.0" layoutY="28.0" text="Park Name:" />
-                  <Label layoutX="303.0" layoutY="64.0" text="Location: " />
+                  <Label layoutX="310.0" layoutY="64.0" text="Address:" />
                   <Label layoutX="236.0" layoutY="101.0" text="Dates of Operation: " />
                   <TextField fx:id="parkName" layoutX="378.0" layoutY="23.0" prefHeight="31.0" prefWidth="277.0" text="name" />
                   <TextField fx:id="parkLocation" layoutX="378.0" layoutY="59.0" prefHeight="31.0" prefWidth="278.0" text="123 Street" />
@@ -52,7 +53,7 @@
                         <Font size="28.0" />
                      </font>
                   </Label>
-                  <Label layoutX="432.0" layoutY="177.0" prefHeight="40.0" prefWidth="211.0" text="Park Information">
+                  <Label layoutX="433.0" layoutY="177.0" prefHeight="40.0" prefWidth="211.0" text="Park Information">
                      <font>
                         <Font size="28.0" />
                      </font>

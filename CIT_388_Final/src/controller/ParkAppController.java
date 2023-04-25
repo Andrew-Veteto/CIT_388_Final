@@ -75,6 +75,8 @@ public class ParkAppController {
 	private TextField datesOfOperation;
 	@FXML
 	private TextField parkScore;
+	@FXML
+	private Button updatePark;
 
 	@FXML
 	void initialize() {
@@ -937,6 +939,69 @@ public class ParkAppController {
 					}
 				} catch (IOException e) {
 					d.showAndWait();
+				}
+			}
+		});
+		updatePark.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				TextInputDialog input = new TextInputDialog();
+				input.setTitle("Update Park");
+				input.setHeaderText("Choose what value you want to update:" + "\n" + "1. Name" + "\n" + "2. Address"
+						+ "\n" + "3. Dates of Operation" + "\n" + "4. Park Raiting");
+				input.setContentText("(1-4)");
+				Optional<String> result = input.showAndWait();
+
+				Alert a = new Alert(null, "Invalid Input!", ButtonType.CLOSE);
+				if (result.isPresent()) {
+					try {
+						int choice = Integer.parseInt(result.get());
+						if (choice > 4 || choice < 1) {
+							a.showAndWait();
+						} else {
+							switch (choice) {
+							case 1:
+								input.setHeaderText("Current name: " + system.getPark().get(0).getName());
+								input.setContentText("Name: ");
+								Optional<String> result1 = input.showAndWait();
+								system.getPark().get(0).setName(result1.get());
+								parkName.setText(system.getPark().get(0).getName());
+								break;
+							case 2:
+								input.setHeaderText("Current Address: " + system.getPark().get(0).getLocation());
+								input.setContentText("Address: ");
+								Optional<String> result2 = input.showAndWait();
+								system.getPark().get(0).setLocation(result2.get());
+								parkLocation.setText(system.getPark().get(0).getLocation());
+								break;
+							case 3:
+								input.setHeaderText("Current Schedule: " + system.getPark().get(0).getDatesOfOperation());
+								input.setContentText("Schedule: ");
+								Optional<String> result3 = input.showAndWait();
+								system.getPark().get(0).setDatesOfOperation(result3.get());
+								datesOfOperation.setText(system.getPark().get(0).getDatesOfOperation());
+								break;
+							case 4:
+								input.setHeaderText("Current Raiting: " + system.getPark().get(0).getparkRaiting());
+								input.setContentText("Value: ");
+								Optional<String> result4 = input.showAndWait();
+								try {
+									int temp = Integer.parseInt(result4.get());
+									if(temp < 0 || temp > 999) {
+										a.showAndWait();
+									}else {
+										system.getPark().get(0).setparkRaiting(temp);
+										parkScore.setText(system.getPark().get(0).getparkRaiting() + "");
+									}
+								}catch (Exception e) {
+									a.showAndWait();
+								}
+							}
+
+						}
+					} catch (Exception e) {
+						a.showAndWait();
+					}
 				}
 			}
 		});
