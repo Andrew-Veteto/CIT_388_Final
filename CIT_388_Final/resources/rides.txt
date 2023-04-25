@@ -1,0 +1,15 @@
+100 basic 50000 Marry-Go-Round
+Horse ride that goes in a circle
+Huss 0 flatRide
+Circles
+Gentle
+120 basic 12000 Boat-Heir
+Explore the lake at your own pace
+Arrow 24 waterRide
+Swan
+false
+500 space 140000 Orion
+Giga Roller coaster
+B&N 48 rollerCoaster
+Top of Track
+Extreme Chain-Lift

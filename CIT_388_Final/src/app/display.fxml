@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ParkAppController">
+   <top>
+      <AnchorPane prefHeight="36.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="employeesBtn" layoutX="6.0" layoutY="3.0" mnemonicParsing="false" text="Employees" />
+            <Button fx:id="guestsBtn" layoutX="98.0" layoutY="3.0" mnemonicParsing="false" text="Guests" />
+            <Button fx:id="ridesBtn" layoutX="163.0" layoutY="3.0" mnemonicParsing="false" text="Rides" />
+            <Button fx:id="saveBtn" layoutX="842.0" layoutY="3.0" mnemonicParsing="false" text="Save" />
+            <Button fx:id="loadBtn" layoutX="789.0" layoutY="3.0" mnemonicParsing="false" text="Load" />
+            <Button fx:id="newBtn" layoutX="219.0" layoutY="3.0" mnemonicParsing="false" text="New" />
+            <Button fx:id="removeBtn" layoutX="269.0" layoutY="3.0" mnemonicParsing="false" text="Remove" />
+            <Button fx:id="allInfoBtn" layoutX="343.0" layoutY="3.0" mnemonicParsing="false" text="Generate All Info" />
+         </children>
+      </AnchorPane>
+   </top>
+   <left>
+      <ListView fx:id="lineDisplay" prefHeight="564.0" prefWidth="234.0" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TextArea fx:id="middleDisplay" layoutX="7.0" layoutY="3.0" prefHeight="256.0" prefWidth="648.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TextField fx:id="numEmployees" layoutX="149.0" layoutY="96.0" prefHeight="31.0" prefWidth="42.0" promptText="Rides" text="0" />
+                  <TextField fx:id="numGuests" layoutX="149.0" layoutY="139.0" prefHeight="31.0" prefWidth="42.0" promptText="Guests" text="0" />
+                  <TextField fx:id="numRides" layoutX="149.0" layoutY="181.0" prefHeight="31.0" prefWidth="42.0" promptText="Employees" text="0" />
+                  <Label layoutX="41.0" layoutY="186.0" text="Num of Rides:" />
+                  <Label layoutX="36.0" layoutY="144.0" text="Num of Guests:" />
+                  <Label layoutX="14.0" layoutY="101.0" text="Num of Employees:" />
+                  <Label layoutX="291.0" layoutY="28.0" text="Park Name:" />
+                  <Label layoutX="303.0" layoutY="64.0" text="Location: " />
+                  <Label layoutX="236.0" layoutY="101.0" text="Dates of Operation: " />
+                  <TextField fx:id="parkName" layoutX="378.0" layoutY="23.0" prefHeight="31.0" prefWidth="277.0" text="name" />
+                  <TextField fx:id="parkLocation" layoutX="378.0" layoutY="59.0" prefHeight="31.0" prefWidth="278.0" text="123 Street" />
+                  <TextField fx:id="datesOfOperation" layoutX="378.0" layoutY="96.0" prefHeight="31.0" prefWidth="279.0" text="0/0/0 - 0/0/0" />
+                  <TextField fx:id="parkScore" layoutX="378.0" layoutY="139.0" prefHeight="31.0" prefWidth="279.0" text="000" />
+                  <Label layoutX="281.0" layoutY="144.0" text="Park Raiting:" />
+                  <Label layoutX="14.0" layoutY="39.0" prefHeight="40.0" prefWidth="175.0" text="The Numbers">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="432.0" layoutY="177.0" prefHeight="40.0" prefWidth="211.0" text="Park Information">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>

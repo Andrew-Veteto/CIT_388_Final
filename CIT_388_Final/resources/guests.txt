@@ -1,0 +1,20 @@
+Andrew 100 50.0 0
+Justin 90 65.0 1
+Map
+Hannah 90 60.5 1
+Map
+John 100 70.5 1
+Cup
+Sean 80 60.0 0
+Gary 60 80.0 2
+Map
+Cup
+Denise 65 76.5 1
+Cup
+Tanya 70 70.0 0
+Susan 65 75.0 1
+Map
+Tammy 80 65.0 0
+Logan 90 56.6 2
+Map
+Cup
