@@ -8,9 +8,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import ParkClasses.employee;
 import ParkClasses.guests;
+import ParkClasses.park;
 import RideClasses.flatRide;
 import RideClasses.ride;
 import RideClasses.rollerCoaster;
@@ -26,6 +28,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -54,7 +59,7 @@ public class ParkAppController {
 	@FXML
 	private ListView<String> lineDisplay;
 	@FXML
-	private Button newBtn;
+	private Button newObjBtn;
 	@FXML
 	private Button removeBtn;
 	@FXML
@@ -77,30 +82,17 @@ public class ParkAppController {
 	private TextField parkScore;
 	@FXML
 	private Button updatePark;
+	@FXML
+	private Button newFileBtn;
 
 	@FXML
 	void initialize() {
-		loadBtn.setDisable(true);
-		saveBtn.setDisable(true);
+		// Need File Path to start
+		ParkProcessingSystem system = new ParkProcessingSystem();
 
-		// Fetching files
-		Path parkFile = Paths.get(".\\resources\\park.txt");
-		Path guestsFile = Paths.get(".\\resources\\guests.txt");
-		Path employeesFile = Paths.get(".\\resources\\employees.txt");
-		Path ridesFile = Paths.get(".\\resources\\rides.txt");
-
-		// Loading System
-		ParkProcessingSystem system = new ParkProcessingSystem(guestsFile, employeesFile, ridesFile, parkFile);
-
-		// Filling in basic Info
-		numEmployees.setText(system.getEmployees().size() + "");
-		numGuests.setText(system.getGuests().size() + "");
-		numRides.setText(system.getRides().size() + "");
-		parkName.setText(system.getPark().get(0).getName());
-		parkLocation.setText(system.getPark().get(0).getLocation());
-		datesOfOperation.setText(system.getPark().get(0).getDatesOfOperation());
-		parkScore.setText(system.getPark().get(0).getparkRaiting() + "");
-
+		// Hiding Buttons until a file is open
+		changeButtonVis(true);
+		System.out.println(system.getFile());
 		// All the Buttons
 		employeesBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -216,7 +208,7 @@ public class ParkAppController {
 
 			}
 		});
-		newBtn.setOnAction(new EventHandler<ActionEvent>() {
+		newObjBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				TextInputDialog input = new TextInputDialog();
@@ -252,14 +244,22 @@ public class ParkAppController {
 									if (Eresult.isPresent()) {
 										try {
 											EID = Integer.parseInt(Eresult.get());
-											for (int i = 0; i < system.getEmployees().size(); i++) {
-												if (system.getEmployees().get(i).getEmployeeID() == EID) {
-													safe = false;
-													break;
-												} else {
-													safe = true;
+
+											if (system.getEmployees().size() == 0) {
+												EID = Integer.parseInt(Eresult.get());
+												safe = true;
+											} else {
+												for (int i = 0; i < system.getEmployees().size(); i++) {
+													if (system.getEmployees().get(i).getEmployeeID() == EID) {
+														System.out.println(system.getEmployees().size());
+														safe = false;
+														break;
+													} else {
+														safe = true;
+													}
 												}
 											}
+
 											if (safe) {
 												EID = Integer.parseInt(Eresult.get());
 												loop = true;
@@ -278,6 +278,10 @@ public class ParkAppController {
 									input.setContentText("Name: ");
 									Optional<String> Eresult = input.showAndWait();
 									if (Eresult.isPresent()) {
+										if (system.getEmployees().size() == 0) {
+											EName = Eresult.get();
+											loop = true;
+										}
 										try {
 											for (int i = 0; i < system.getEmployees().size(); i++) {
 												if (system.getEmployees().get(i).getName().equals(Eresult.get())) {
@@ -300,9 +304,12 @@ public class ParkAppController {
 								}
 								loop = false;
 								while (loop == false) {
-									input.setHeaderText("Enter in the employees Job:");
-									input.setContentText("Job: ");
-									Optional<String> Eresult = input.showAndWait();
+									ChoiceDialog<String> input2 = new ChoiceDialog<>("custodian", "mechanic",
+											"security", "ride operator");
+									input2.setTitle("New Employee");
+									input2.setHeaderText("Enter in the employees Job:");
+									input2.setContentText("Job: ");
+									Optional<String> Eresult = input2.showAndWait();
 									if (Eresult.isPresent()) {
 										try {
 											EJob = Eresult.get();
@@ -333,6 +340,12 @@ public class ParkAppController {
 									Optional<String> Eresult = input.showAndWait();
 									if (Eresult.isPresent()) {
 										try {
+
+											if (system.getGuests().size() == 0) {
+												GID = Integer.parseInt(Eresult.get());
+												safe = true;
+											}
+
 											GID = Integer.parseInt(Eresult.get());
 											for (int i = 0; i < system.getGuests().size(); i++) {
 												if (system.getGuests().get(i).getId() == GID) {
@@ -361,6 +374,12 @@ public class ParkAppController {
 									Optional<String> Eresult = input.showAndWait();
 									if (Eresult.isPresent()) {
 										try {
+
+											if (system.getGuests().size() == 0) {
+												GName = Eresult.get();
+												safe = true;
+											}
+
 											GName = Eresult.get();
 											for (int i = 0; i < system.getGuests().size(); i++) {
 												if (system.getGuests().get(i).getName().equals(Eresult.get())) {
@@ -388,9 +407,13 @@ public class ParkAppController {
 									Optional<String> Eresult = input.showAndWait();
 									if (Eresult.isPresent()) {
 										try {
-											temp = Eresult.get();
-											GMoney = Integer.parseInt(temp);
-											loop = true;
+											int temp2 = Integer.parseInt(Eresult.get());
+											if (temp2 < 0) {
+												a.showAndWait();
+											} else {
+												GMoney = temp2;
+												loop = true;
+											}
 										} catch (Exception e) {
 											a.showAndWait();
 										}
@@ -403,9 +426,13 @@ public class ParkAppController {
 									Optional<String> Eresult = input.showAndWait();
 									if (Eresult.isPresent()) {
 										try {
-											temp = Eresult.get();
-											GHappy = Integer.parseInt(temp);
-											loop = true;
+											int temp2 = Integer.parseInt(Eresult.get());
+											if (temp2 < 0) {
+												a.showAndWait();
+											} else {
+												GHappy = temp2;
+												loop = true;
+											}
 										} catch (Exception e) {
 											a.showAndWait();
 										}
@@ -428,8 +455,10 @@ public class ParkAppController {
 													a.showAndWait();
 												}
 											}
-										} else {
+										} else if (Eresult.get().equals("n")) {
 											loop = true;
+										} else {
+											a.showAndWait();
 										}
 									}
 								}
@@ -457,6 +486,12 @@ public class ParkAppController {
 									Optional<String> Eresult = input.showAndWait();
 									if (Eresult.isPresent()) {
 										try {
+
+											if (system.getRides().size() == 0) {
+												RName = Eresult.get();
+												safe = true;
+											}
+
 											RName = Eresult.get();
 											for (int i = 0; i < system.getRides().size(); i++) {
 												if (system.getRides().get(i).getName().equals(Eresult.get())) {
@@ -749,7 +784,7 @@ public class ParkAppController {
 								input.setHeaderText("Enter in the name of the Ride you want to remove");
 								input.setContentText("Name: ");
 								Optional<String> Rresult11 = input.showAndWait();
-								for (int i = 0; i < system.getEmployees().size(); i++) {
+								for (int i = 0; i < system.getRides().size(); i++) {
 									if (system.getRides().get(i).getName().equals(Rresult11.get())) {
 										system.getRides().remove(i);
 										numRides.setText(system.getRides().size() + "");
@@ -975,7 +1010,8 @@ public class ParkAppController {
 								parkLocation.setText(system.getPark().get(0).getLocation());
 								break;
 							case 3:
-								input.setHeaderText("Current Schedule: " + system.getPark().get(0).getDatesOfOperation());
+								input.setHeaderText(
+										"Current Schedule: " + system.getPark().get(0).getDatesOfOperation());
 								input.setContentText("Schedule: ");
 								Optional<String> result3 = input.showAndWait();
 								system.getPark().get(0).setDatesOfOperation(result3.get());
@@ -987,13 +1023,13 @@ public class ParkAppController {
 								Optional<String> result4 = input.showAndWait();
 								try {
 									int temp = Integer.parseInt(result4.get());
-									if(temp < 0 || temp > 999) {
+									if (temp < 0 || temp > 999) {
 										a.showAndWait();
-									}else {
+									} else {
 										system.getPark().get(0).setparkRaiting(temp);
 										parkScore.setText(system.getPark().get(0).getparkRaiting() + "");
 									}
-								}catch (Exception e) {
+								} catch (Exception e) {
 									a.showAndWait();
 								}
 							}
@@ -1005,5 +1041,236 @@ public class ParkAppController {
 				}
 			}
 		});
+		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				saveFile(system);
+			}
+		});
+		loadBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				loadFile(system);
+				refreshScreen(system);
+			}
+		});
+		newFileBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+
+				Alert b = new Alert(AlertType.WARNING, "Save Current File If You Want to Keep Data.", ButtonType.NO,
+						ButtonType.APPLY, ButtonType.CANCEL);
+				Optional<ButtonType> andy = b.showAndWait();
+
+				if (andy.isPresent()) {
+					if (andy.get() == ButtonType.APPLY) {
+						saveFile(system);
+					} else if (andy.get() == ButtonType.CANCEL) {
+
+					} else {
+						Alert a = new Alert(null, "Invalid Input!", ButtonType.CANCEL);
+						String name = "";
+						String address = "";
+						String dates = "";
+						int pr = 0;
+						try {
+							TextInputDialog input = new TextInputDialog();
+							input.setTitle("Setup Park");
+							input.setHeaderText("Enter in the name of your park: ");
+							input.setContentText("name: ");
+							Optional<String> result = input.showAndWait();
+							if (result.isPresent()) {
+								name = result.get();
+							}
+
+							input.setHeaderText("Enter in the address of your park: ");
+							input.setContentText("address: ");
+							result = input.showAndWait();
+							if (result.isPresent()) {
+								address = result.get();
+							}
+
+							input.setHeaderText("Enter in the start date to end state of operation: ");
+							input.setContentText("12/12/2000 - 12/12/2001: ");
+							result = input.showAndWait();
+							if (result.isPresent()) {
+								dates = result.get();
+							}
+
+							boolean loop = false;
+							while (loop == false) {
+								input.setHeaderText("Enter in the park raiting: ");
+								input.setContentText("001-999: ");
+								result = input.showAndWait();
+								if (result.isPresent()) {
+									try {
+										int num = Integer.parseInt(result.get());
+										if (num < 1 || num > 999) {
+											a.showAndWait();
+										} else {
+											pr = num;
+											loop = true;
+										}
+									} catch (Exception e) {
+										a.showAndWait();
+									}
+								}
+							}
+
+							system.newFileSetUp();
+
+							park dog = system.createPark();
+							dog.setName(name);
+							dog.setLocation(address);
+							dog.setDatesOfOperation(dates);
+							dog.setparkRaiting(pr);
+							system.getPark().add(dog);
+
+							refreshScreen(system);
+							changeButtonVis(false);
+
+						} catch (Exception e) {
+							a.showAndWait();
+						}
+					}
+				}
+			}
+		});
+
 	}
+
+	public void loadFile(ParkProcessingSystem system) {
+		TextInputDialog input = new TextInputDialog();
+		input.setTitle("load file");
+		input.setHeaderText("Please enter in the file path of your park file: ");
+		input.setContentText("path: ");
+		Optional<String> result = input.showAndWait();
+
+		Alert a = new Alert(null, "Something Went Wrong!" + "\n" + "Please check file path", ButtonType.CANCEL);
+		try (Scanner fileFiner = new Scanner(result.get())) {
+			// File Path
+			Path parkFile = Paths.get(result.get());
+			File file = new File(result.get());
+			system.setFile(file);
+			// Getting data
+			system.load(parkFile);
+			changeButtonVis(false);
+
+		} catch (Exception e) {
+			a.showAndWait();
+		}
+	}
+
+	public void refreshScreen(ParkProcessingSystem system) {
+		numEmployees.setText(system.getEmployees().size() + "");
+		numGuests.setText(system.getGuests().size() + "");
+		numRides.setText(system.getRides().size() + "");
+		parkName.setText(system.getPark().get(0).getName());
+		parkLocation.setText(system.getPark().get(0).getLocation());
+		datesOfOperation.setText(system.getPark().get(0).getDatesOfOperation());
+		parkScore.setText(system.getPark().get(0).getparkRaiting() + "");
+	}
+
+	public void changeButtonVis(Boolean state) {
+		employeesBtn.setDisable(state);
+		guestsBtn.setDisable(state);
+		ridesBtn.setDisable(state);
+		newObjBtn.setDisable(state);
+		removeBtn.setDisable(state);
+		allInfoBtn.setDisable(state);
+		updatePark.setDisable(state);
+		saveBtn.setDisable(state);
+	}
+
+	public void saveFile(ParkProcessingSystem system) {
+		Alert a2 = new Alert(null, "", ButtonType.CANCEL);
+		Alert b = new Alert(null, "File already exists.", ButtonType.CANCEL);
+		Alert c = new Alert(null, "File Saved", ButtonType.CANCEL);
+		Alert d = new Alert(null, "An error occurred.", ButtonType.CANCEL);
+
+		String fileName = system.getPark().get(0).getName() + ".txt";
+		try {
+			TextInputDialog input = new TextInputDialog();
+			input.setTitle("Save File");
+			input.setHeaderText("Current Name: " + system.getFile() + "\n" + "Do not add file extension!");
+			input.setContentText("Name:");
+			Optional<String> result = input.showAndWait();
+
+			Alert a = new Alert(null, "Invalid Input!", ButtonType.CLOSE);
+			if (result.isPresent()) {
+				fileName = result.get() + ".txt";
+				try {
+					File myObj = new File(fileName);
+					if (myObj.createNewFile()) {
+						a.setContentText("File created: " + myObj.getName());
+						a.showAndWait();
+						try {
+							FileWriter myWriter = new FileWriter(fileName);
+							// Park Info
+							myWriter.write(system.getPark().get(0).getName() + "\n");
+							myWriter.write(system.getPark().get(0).getLocation() + "\n");
+							myWriter.write(system.getPark().get(0).getDatesOfOperation() + "\n");
+							myWriter.write(system.getPark().get(0).getparkRaiting() + "\n");
+							myWriter.write("EMPLOYEES" + "\n");
+							// Employees
+							for (int i = 0; i < system.getEmployees().size(); i++) {
+								myWriter.write(system.getEmployees().get(i).getName() + " ");
+								myWriter.write(system.getEmployees().get(i).getJob() + "\n");
+							}
+							myWriter.write("RIDES" + "\n");
+							// Rides
+							for (int i = 0; i < system.getRides().size(); i++) {
+								myWriter.write(system.getRides().get(i).getCostToMaintain() + " ");
+								myWriter.write(system.getRides().get(i).getTheme() + " ");
+								myWriter.write(system.getRides().get(i).getPriceToBuild() + " ");
+								myWriter.write(system.getRides().get(i).getName() + "\n");
+								myWriter.write(system.getRides().get(i).getDescription() + "\n");
+								myWriter.write(system.getRides().get(i).getManufacturer() + " ");
+								myWriter.write(system.getRides().get(i).getHeightRequirement() + " ");
+								myWriter.write(system.getRides().get(i).getClass().getSimpleName() + "\n");
+								if (system.getRides().get(i).getClass().getSimpleName().equals("flatRide")) {
+									myWriter.write(((flatRide) system.getRides().get(i)).getMovementType() + "\n");
+									myWriter.write(((flatRide) system.getRides().get(i)).getIntensityCat() + "\n");
+								}
+								if (system.getRides().get(i).getClass().getSimpleName().equals("waterRide")) {
+									myWriter.write(((waterRide) system.getRides().get(i)).getBoatType() + "\n");
+									myWriter.write(((waterRide) system.getRides().get(i)).isTracked() + "" + "\n");
+								}
+								if (system.getRides().get(i).getClass().getSimpleName().equals("rollerCoaster")) {
+									myWriter.write(((rollerCoaster) system.getRides().get(i)).getTrackType() + "\n");
+									myWriter.write(((rollerCoaster) system.getRides().get(i)).getIntensityCat() + " ");
+									myWriter.write(
+											((rollerCoaster) system.getRides().get(i)).getPotentialEnergyType() + "\n");
+								}
+							}
+							myWriter.write("GUESTS" + "\n");
+							// Guests
+							for (int i = 0; i < system.getGuests().size(); i++) {
+								myWriter.write(system.getGuests().get(i).getName() + " ");
+								myWriter.write(system.getGuests().get(i).getMoney() + " ");
+								myWriter.write(system.getGuests().get(i).getIsHappy() + " ");
+								myWriter.write(system.getGuests().get(i).getSuvenirs().size() + "\n");
+								for (int x = 0; x < system.getGuests().get(i).getSuvenirs().size(); x++) {
+									myWriter.write(system.getGuests().get(i).getSuvenirs().get(x) + "\n");
+								}
+							}
+							myWriter.close();
+							c.showAndWait();
+						} catch (IOException e) {
+							System.out.println("test");
+							d.showAndWait();
+						}
+
+					} else {
+						b.showAndWait();
+					}
+				} catch (IOException e) {
+					d.showAndWait();
+				}
+			}
+		} catch (Exception e) {
+			a2.showAndWait();
+		}
+	}
+
 }

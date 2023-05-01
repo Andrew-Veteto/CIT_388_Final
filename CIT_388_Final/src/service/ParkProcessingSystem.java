@@ -1,5 +1,7 @@
 package service;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +19,26 @@ public class ParkProcessingSystem {
 
 	private static int guestNum = 1;
 	private String locationOfinterest;
+	private String file;
 	private List<guests> guest = new ArrayList<guests>();
 	private List<String> suvenires = new ArrayList<String>();
 	private List<employee> employees = new ArrayList<>();
 	private List<ride> rides = new ArrayList<>();
 	private List<park> park = new ArrayList<>();
 
-	public ParkProcessingSystem(Path pathToGuests, Path pathToEmployees, Path pathToRides, Path pathToPark) {
-		//This loads the park
-		try(Scanner input = new Scanner(pathToPark)){
+	public ParkProcessingSystem() {
+	};
+
+	public void load(Path pathToPark) throws IOException {
+		// Purging local data
+		guest.clear();
+		suvenires.clear();
+		employees.clear();
+		rides.clear();
+		park.clear();
+
+		// Loading File
+		try (Scanner input = new Scanner(pathToPark)) {
 			String name = input.nextLine();
 			String address = input.nextLine();
 			String days = input.nextLine();
@@ -36,17 +49,113 @@ public class ParkProcessingSystem {
 			p.setDatesOfOperation(days);
 			p.setparkRaiting(num);
 			park.add(p);
-		}catch (Exception e) {
-			
-		}
-		
-		// This loads the guests
-		try (Scanner input = new Scanner(pathToGuests)) {
-			int count = 1;
+
+			String clear = input.nextLine();
+			String IDArea = input.nextLine();
+			int count = 0;
+			if (IDArea.equals("EMPLOYEES")) {
+				count = 1;
+				while (input.hasNext()) {
+					employee temp = new employee();
+					name = input.next();
+					if (name.equals("RIDES")) {
+						break;
+					} else {
+						String job = input.next();
+						temp.setEmployeeID(count);
+						System.out.println(count);
+						temp.setName(name);
+						temp.setJob(job);
+						count++;
+						employees.add(temp);
+					}
+				}
+			}
+
+			if (name.equals("RIDES")) {
+				count = 1;
+				while (input.hasNext()) {
+					Double ctm = 0.0;
+					try {
+						ctm = input.nextDouble();
+					} catch (Exception e) {
+						break;
+					}
+					String theme = input.next();
+					Double ptb = input.nextDouble();
+					name = input.next();
+					clear = input.nextLine();
+					String desc = input.nextLine();
+					String manu = input.next();
+					int height = input.nextInt();
+					String type = input.next();
+
+					if (type.equals("flatRide")) {
+						clear = input.nextLine();
+						String mt = input.nextLine();
+						String ic = input.nextLine();
+						flatRide temp = new flatRide();
+						temp.setIntensityCat(ic);
+						temp.setMovementType(mt);
+						temp.setCostToMaintain(ctm);
+						temp.setTheme(theme);
+						temp.setPriceToBuild(ptb);
+						temp.setName(name);
+						temp.setDescription(desc);
+						temp.setManufacturer(manu);
+						temp.setHeightRequirement(height);
+						rides.add(temp);
+					}
+					if (type.equals("waterRide")) {
+						clear = input.nextLine();
+						String bt = input.nextLine();
+						String t = input.nextLine();
+						boolean track = false;
+						if (t.equals("true")) {
+							track = true;
+						}
+						waterRide temp = new waterRide();
+						temp.setBoatType(bt);
+						temp.setTracked(track);
+						temp.setCostToMaintain(ctm);
+						temp.setTheme(theme);
+						temp.setPriceToBuild(ptb);
+						temp.setName(name);
+						temp.setDescription(desc);
+						temp.setManufacturer(manu);
+						temp.setHeightRequirement(height);
+						rides.add(temp);
+					}
+					if (type.equals("rollerCoaster")) {
+						clear = input.nextLine();
+						String tt = input.nextLine();
+						String ic = input.next();
+						String pet = input.next();
+						rollerCoaster temp = new rollerCoaster();
+						temp.setCostToMaintain(ctm);
+						temp.setTheme(theme);
+						temp.setPriceToBuild(ptb);
+						temp.setName(name);
+						temp.setDescription(desc);
+						temp.setManufacturer(manu);
+						temp.setHeightRequirement(height);
+						temp.setTrackType(tt);
+						temp.setIntensityCat(ic);
+						temp.setPotentialEnergyType(pet);
+						rides.add(temp);
+					}
+				}
+
+			} // This is Rides
+
+			// This loads the guests
+
+			IDArea = input.nextLine();
+			count = 1;
 			while (input.hasNext()) {
 				guests temp = new guests();
-				String name = input.next();
-				int money = input.nextInt();
+				name = input.next();
+				Double money = input.nextDouble();
 				double happyLevel = input.nextDouble();
 				int amountOfSuvenires = input.nextInt();
 				temp.setId(count);
@@ -64,101 +173,12 @@ public class ParkProcessingSystem {
 				count++;
 				suvenires.clear();
 			}
-		} catch (Exception e) {
-		}
 
-		// This loads the employees
-		try (Scanner input = new Scanner(pathToEmployees)) {
-			int count = 1;
-			while (input.hasNext()) {
-				employee temp = new employee();
-				String name = input.next();
-				String job = input.next();
-				temp.setEmployeeID(count);
-				temp.setName(name);
-				temp.setJob(job);
-				count++;
-				employees.add(temp);
-			}
-		} catch (Exception e) {
-		}
-
-		// This loads the rides
-		try (Scanner input = new Scanner(pathToRides)) {
-			int count = 1;
-			while (input.hasNext()) {
-				int ctm = input.nextInt();
-				String theme = input.next();
-				int ptb = input.nextInt();
-				String name = input.next();
-				String clear = input.nextLine();
-				String desc = input.nextLine();
-				String manu = input.next();
-				int height = input.nextInt();
-				String type = input.next();
-				
-				if (type.equals("flatRide")) {
-					clear = input.nextLine();
-					String mt = input.nextLine();
-					String ic = input.nextLine();
-					flatRide temp = new flatRide();
-					temp.setIntensityCat(ic);
-					temp.setMovementType(mt);
-					temp.setCostToMaintain(ctm);
-					temp.setTheme(theme);
-					temp.setPriceToBuild(ptb);
-					temp.setName(name);
-					temp.setDescription(desc);
-					temp.setManufacturer(manu);
-					temp.setHeightRequirement(height);
-					rides.add(temp);
-				}
-				if (type.equals("waterRide")) {
-					clear = input.nextLine();
-					String bt = input.nextLine();
-					String t = input.nextLine();
-					boolean track = false;
-					if(t.equals("true")) {
-						track = true;
-					}
-					waterRide temp = new waterRide();
-					temp.setBoatType(bt);
-					temp.setTracked(track);
-					temp.setCostToMaintain(ctm);
-					temp.setTheme(theme);
-					temp.setPriceToBuild(ptb);
-					temp.setName(name);
-					temp.setDescription(desc);
-					temp.setManufacturer(manu);
-					temp.setHeightRequirement(height);
-					rides.add(temp);
-				}				 
-				if (type.equals("rollerCoaster")) {
-					clear = input.nextLine();
-					String tt = input.nextLine();
-					String ic = input.next();
-					String pet = input.next();
-					rollerCoaster temp = new rollerCoaster();
-					temp.setCostToMaintain(ctm);
-					temp.setTheme(theme);
-					temp.setPriceToBuild(ptb);
-					temp.setName(name);
-					temp.setDescription(desc);
-					temp.setManufacturer(manu);
-					temp.setHeightRequirement(height);
-					temp.setTrackType(tt);
-					temp.setIntensityCat(ic);
-					temp.setPotentialEnergyType(pet);
-					rides.add(temp);
-				}
-			
-			}
-		} catch (Exception e) {
-		}
+		} // This is Park
 	}
 
 	// Park Stuff
-	private park createPark() {
+	public park createPark() {
 		park p = new park();
 		return p;
 	}
@@ -166,7 +186,7 @@ public class ParkProcessingSystem {
 	public List<park> getPark() {
 		return park;
 	}
-	
+
 	// Guests Stuff
 	public guests createGuests() {
 		guests guest = new guests();
@@ -221,4 +241,21 @@ public class ParkProcessingSystem {
 		this.locationOfinterest = locationOfinterest;
 	}
 
+	// File Stuff
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file.getName();
+	}
+
+	public void newFileSetUp() {
+		// Purging local data
+		guest.clear();
+		suvenires.clear();
+		employees.clear();
+		rides.clear();
+		park.clear();
+	}
 }
